@@ -1,28 +1,22 @@
-function generateKeyPair(){
+async function generateKeyPair(){
     window.crypto.subtle.generateKey(
         {
             name: "RSASSA-PKCS1-v1_5",
             modulusLength: 2048, //can be 1024, 2048, or 4096
             publicExponent: new Uint8Array([0x01, 0x00, 0x01]),
-            hash: {name: "SHA-384"}, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
+            hash: {name: "SHA-256"}, //can be "SHA-1", "SHA-256", "SHA-384", or "SHA-512"
         },
         false, //whether the key is extractable (i.e. can be used in exportKey)
         ["sign", "verify"] //can be any combination of "sign" and "verify"
-    )
-        .then(function(key){
-            //Se guarda el key publico y el privado en el Storage en la sesion del usuario
-            window.localStorage.setItem('keyPairPublico', key.publicKey);
-            window.localStorage.setItem('keyPairPrivado', key.privateKey);
-        })
-        .catch(function(err){
-            console.error(err);
-        });
+    ).then((keyPair) => {
+        return keyPair;
+    });
 }
 
 function sha256(ascii) {
     function rightRotate(value, amount) {
         return (value>>>amount) | (value<<(32 - amount));
-    };
+    }
 
     var mathPow = Math.pow;
     var maxWord = mathPow(2, 32);

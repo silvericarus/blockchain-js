@@ -1,45 +1,39 @@
-//TODO Arreglar classes.js para que funcione correctamente
-//Take keys from localstorage
-let keyPairPub = localStorage.getItem('keyPairPublico');
-let keyPairPriv = localStorage.getItem('keyPairPrivado');
 //Transactions
 class Transaction{
   constructor(from, to, amount){
     this.from = from;
     this.to = to;
     this.amount = amount;
-    this.signature = this.signTransaction(keyPairPriv);
+    this.signature = this.signTransaction(window.keyPairPrivado);
   }
 
     calculateHash(){
       return sha256(this.from + this.to + this.amount,{asString:false});
     }
 
-    signTransaction(signingKey){
-        if(signingKey.getPublic('hex') !== this.from){
-            //TODO Cambiar el mensaje del error
-            throw new Error('You cannot sign transactions for other wallets!');
+   async signTransaction(signingKey){
+      console.log(typeof signingKey);
+        if(signingKey !== this.from){
+            throw new Error('No puedes firmar transaciones en otras wallets...');
         }
             const hash = this.calculateHash();
-            const sig = SubtleCrypto.sign(
+       return await window.crypto.subtle.sign(
                 "RSASSA-PKCS1-v1_5",
                 signingKey,
                 hash
-            ).then(function (){
-                return sig;
-            });
+            );
     }
 
-    isValid(){
+    async isValid(){
         if(this.from === null) return true;
 
         if(!this.signature || this.signature.length === 0){
             throw new Error('No hay firma en esta transacción');
         }
 
-        return SubtleCrypto.verify(
+        return await SubtleCrypto.verify(
             "RSASSA-PKCS1-v1_5",
-            keyPairPub,
+            window.keyPairPublico,
             this.signature);
     }
 }
@@ -125,7 +119,7 @@ class Block{
   }
   
   //function that creates a div that floats above a block and displays the data of the block
-  function showData(block){
+  /*function showData(block){
     let dataCard = document.createElement('div');
     dataCard.classList.add('card');
     const cardcontent = document.createElement('div');
@@ -149,7 +143,7 @@ class Block{
     cardcontent.appendChild(content);
     dataCard.appendChild(cardcontent);
     block.appendChild(data);
-  }
+  }*/
 
 //Blockchain
 class Blockchain{

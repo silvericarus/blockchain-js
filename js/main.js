@@ -321,8 +321,7 @@ function materialColor(){
 
     var colorList = colors[pickRandomProperty(colors)];
     var newColorKey = pickRandomProperty(colorList);
-    var newColor = colorList[newColorKey];
-    return newColor;
+    return colorList[newColorKey];
 }
 
 function pickRandomProperty(obj) {
@@ -334,6 +333,13 @@ function pickRandomProperty(obj) {
     return result;
 }
 
-generateKeyPair();
-var bc = new Blockchain();
+generateKeyPair().then(function (key) {
+  keyPairPub = key.publickey;
+  keyPairPriv = key.privatekey;
+}, function (reason) {
+  console.error(reason);
+});
+const bc = new Blockchain();
+let tr = new Transaction(window.keyPairPublico, bc.chain[0].hash, 42);
+bc.createTransaction(tr);
 console.table(bc);
