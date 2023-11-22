@@ -4,7 +4,7 @@ class Transaction{
     this.from = from;
     this.to = to;
     this.amount = amount;
-    this.signature = this.signTransaction(window.keyPairPrivado);
+    this.signature = this.signTransaction(window.hashPublico);
   }
 
     calculateHash(){
@@ -12,14 +12,13 @@ class Transaction{
     }
 
    async signTransaction(signingKey){
-      console.log(typeof signingKey);
         if(signingKey !== this.from){
             throw new Error('No puedes firmar transaciones en otras wallets...');
         }
             const hash = this.calculateHash();
        return await window.crypto.subtle.sign(
                 "RSASSA-PKCS1-v1_5",
-                signingKey,
+                window.keyPairPrivado,
                 hash
             );
     }
@@ -31,10 +30,11 @@ class Transaction{
             throw new Error('No hay firma en esta transacción');
         }
 
-        return await SubtleCrypto.verify(
+        return await window.crypto.subtle.verify(
             "RSASSA-PKCS1-v1_5",
             window.keyPairPublico,
-            this.signature);
+            this.signature,
+            this);
     }
 }
 
@@ -49,11 +49,17 @@ class Block{
     }
   
     calculateHash(){
-       return sha256(this.previousHash + this.timestamp + JSON.stringify(this.data) + this.nonce,{asString:false});
+       return sha256(
+        this.previousHash + 
+        this.timestamp + 
+        JSON.stringify(this.data) + 
+        this.nonce,{asString:false}
+        );
     }
   
     mine(difficulty){
-      //Se compara el hash con un array de 0 de la misma longitud que el difficulty, POW de Bitcoin
+      /*Se compara el hash con un array de 0 de la misma longitud que el difficulty, 
+      POW de Bitcoin*/
       while(this.hash.substring(0, difficulty) !== Array(difficulty + 1).join("0")){
         this.nonce++;
         this.hash = this.calculateHash();

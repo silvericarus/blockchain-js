@@ -333,13 +333,28 @@ function pickRandomProperty(obj) {
     return result;
 }
 
-generateKeyPair().then(function (key) {
-  keyPairPub = key.publickey;
-  keyPairPriv = key.privatekey;
-}, function (reason) {
-  console.error(reason);
+async function extractHash(key){
+  try {
+    const data = await window.crypto.subtle.exportKey("spki", key);
+    const hashBuffer = await window.crypto.subtle.digest("SHA-256", data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+    return hashHex;
+  } catch(err) {
+    console.error("Error al obtener el hash propio: ", err);
+    throw err;
+  }
+}
+
+generateKeyPair().then(async function (key) {
+  keyPairPub = key.publicKey;
+  keyPairPriv = key.privateKey;
+  window.keyPairPublico = keyPairPub;
+  const hash = await extractHash(keyPairPub);
+  window.hashPublico = hash;
+  const bc = new Blockchain();
+  let tr = new Transaction(window.hashPublico, bc.chain[0].hash, 42);
+  console.table(tr);
+  bc.createTransaction(tr);
 });
-const bc = new Blockchain();
-let tr = new Transaction(window.keyPairPublico, bc.chain[0].hash, 42);
-bc.createTransaction(tr);
-console.table(bc);
+
