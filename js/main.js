@@ -369,6 +369,8 @@ generateKeyPair().then(async function (key) {
   const bc = new Blockchain();
   let tr = new Transaction(window.hashPublico, bc.chain[0].hash, 42);
   bc.createTransaction(tr);
-  console.table(tr);
+  bc.mineAwaitingTransactions(window.hashPublico);
+  createGraphicalBlock(bc.chain[1]);
+  console.table(bc.chain);
 });
 
