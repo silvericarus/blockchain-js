@@ -4,7 +4,7 @@ class Transaction{
     this.from = from;
     this.to = to;
     this.amount = amount;
-    this.signature = this.signTransaction(window.hashPublico);
+    this.signTransaction(window.hashPublico);
   }
 
     calculateHash(){
@@ -15,12 +15,14 @@ class Transaction{
         if(signingKey !== this.from){
             throw new Error('No puedes firmar transaciones en otras wallets...');
         }
-            const hash = this.calculateHash();
-       return await window.crypto.subtle.sign(
+        let hash = this.calculateHash();
+        this.signature = hash;
+        const hashArray = new Uint8Array(hash);
+        this.signature = await window.crypto.subtle.sign(
                 "RSASSA-PKCS1-v1_5",
                 window.keyPairPrivado,
-                hash
-            );
+                hashArray
+        );
     }
 
     async isValid(){
