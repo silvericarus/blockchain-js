@@ -371,6 +371,5 @@ generateKeyPair().then(async function (key) {
   bc.createTransaction(tr);
   bc.mineAwaitingTransactions(window.hashPublico);
   createGraphicalBlock(bc.chain[1]);
-  console.table(bc.chain);
 });
 
