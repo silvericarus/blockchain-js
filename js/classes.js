@@ -4,25 +4,22 @@ class Transaction{
     this.from = from;
     this.to = to;
     this.amount = amount;
-    this.signTransaction(window.hashPublico);
+    this.signTransaction();
   }
 
     calculateHash(){
       return sha256(this.from + this.to + this.amount,{asString:false});
     }
 
-   async signTransaction(signingKey){
-        if(signingKey !== this.from){
-            throw new Error('No puedes firmar transaciones en otras wallets...');
-        }
-        let hash = this.calculateHash();
-        this.signature = hash;
-        const hashArray = new Uint8Array(hash);
-        this.signature = await window.crypto.subtle.sign(
-                "RSASSA-PKCS1-v1_5",
-                window.keyPairPrivado,
-                hashArray
-        );
+   async signTransaction(){
+      let hash = this.calculateHash();
+      this.signature = hash;
+      const hashArray = new Uint8Array(hash);
+      this.signature = await window.crypto.subtle.sign(
+              "RSASSA-PKCS1-v1_5",
+              window.keyPairPrivado,
+              hashArray
+      );
     }
 
     async isValid(){
@@ -31,12 +28,14 @@ class Transaction{
         if(!this.signature || this.signature.length === 0){
             throw new Error('No hay firma en esta transacción');
         }
-
-        return await window.crypto.subtle.verify(
+        const hashArray = new Uint8Array(this.signature);
+        const data = new Uint8Array(this);
+        let verified = await window.crypto.subtle.verify(
             "RSASSA-PKCS1-v1_5",
             window.keyPairPublico,
-            this.signature,
-            this);
+            hashArray,
+            data);
+        return verified;
     }
 }
 
@@ -179,7 +178,6 @@ class Blockchain{
         this.waitingTransactions = [
           new Transaction(null, rewardAddress, this.reward)
         ];
-        //this.colorBlocks();
     }
   
     createTransaction(transaction){
