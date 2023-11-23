@@ -3,27 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>blockchain.js</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/appwrite@13.0.0"></script>
     <script>
         const { Client } = Appwrite;
     </script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        clifford: '#da373d',
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="./css/bulma.min.css">
+    <link rel="stylesheet" href="./css/bulma-calendar.min.css">
+    <link rel="stylesheet" href="./css/bulma-extensions.min.css">
+    <link rel="stylesheet" href="./css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@1,100&display=swap" rel="stylesheet">
+<style>
+    #chain {
+        font-family: 'Victor Mono', monospace;
+        font-style: italic;
+    }
+</style>
 </head>
 <body>
-    <h1 class="text-3xl font-bold underline text-clifford">blockchain.js</h1>
-    <div class="accordion" id="accordionExample">
-    </div>
+    <section class="hero is-primary is-bold is-fullheight">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">blockchain.js</h1>
+                <h2 class="subtitle">A blockchain implementation in JavaScript</h2>
+                <div class="timeline" id="chain">
+                    <header class="timeline-header">
+                        <span class="tag is-medium is-primary">Start of the chain</span>
+                    </header>
+                </div>
+            </div>
+        </div>
     <script src="./js/keygen.js"></script>
     <script src="./js/classes.js"></script>
     <script src="./js/main.js"></script>
