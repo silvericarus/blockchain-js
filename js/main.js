@@ -352,7 +352,7 @@ async function extractHash(key, type){
 	return hashHex;
 	}
   } catch(err) {
-	console.error("Error al obtener el hash propio: ", err);
+	console.error("Error getting own hash: ", err);
 	throw err;
   }
 }
@@ -373,3 +373,32 @@ generateKeyPair().then(async function (key) {
   createGraphicalBlock(bc.chain[1]);
 });
 
+generateTransactionModal = function(){
+	const modal = document.getElementById("transactionModal");
+	modal.classList.add("is-active");
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+	const modal = document.getElementById("transactionModal");
+	function closeModal(){
+		modal.classList.remove("is-active");
+	}
+	const modalTrigger = document.getElementById("modalTrig");
+	function openModal(){
+		modal.classList.add("is-active");
+	}
+	modalTrigger.addEventListener("click", openModal);
+	const modalClose = document.getElementsByClassName("modal-close");
+	modalClose[0].addEventListener("click", closeModal);
+	const modalBackground = document.getElementsByClassName("modal-background");
+	modalBackground[0].addEventListener("click", closeModal);
+	const modalSave = document.getElementsByClassName("modal-save");
+	modalSave[0].addEventListener("click", function(){
+		const from = document.getElementById("from").value;
+		const to = document.getElementById("to").value;
+		const amount = document.getElementById("amount").value;
+		const tr = new Transaction(from, to, amount);
+		bc.createTransaction(tr);
+		closeModal();
+	});
+});

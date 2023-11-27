@@ -1,4 +1,3 @@
-//Transactions
 class Transaction{
   constructor(from, to, amount){
 	this.from = from;
@@ -26,7 +25,7 @@ class Transaction{
 		if(this.from === null) return true;
 
 		if(!this.signature || this.signature.length === 0){
-			throw new Error('No hay firma en esta transacción');
+			throw new Error('This transaction has no signature');
 		}
 		const hashArray = new Uint8Array(this.signature);
 		const data = new Uint8Array(this);
@@ -39,7 +38,6 @@ class Transaction{
 	}
 }
 
-//Blocks
 class Block{
 	constructor(timestamp, transactions, previousHash = ''){
 	  this.timestamp = timestamp;
@@ -92,13 +90,25 @@ class Block{
 	end.parentNode.removeChild(end);
   }
 
+  function convertTimestamp(timestamp){
+	const date = new Date(timestamp);
+	const year = date.getFullYear();
+	const month = date.getMonth()+1;
+	const day = date.getDate();
+	const hour = date.getHours();
+	const min = date.getMinutes();
+	const sec = date.getSeconds();
+	const time = `${day}/${month}/${year} ${hour}:${min}:${sec}`;
+	return time;
+  }
+
   function createGraphicalBlock(block){
 	deleteEnd();
 	const timestamp = document.createElement('div');
 	timestamp.classList.add('timerline-header');
 	const timestampText = document.createElement('span');
 	timestampText.classList.add('tag', 'is-info');
-	timestampText.innerHTML = block.timestamp;
+	timestampText.innerHTML = convertTimestamp(block.timestamp);
 	timestamp.appendChild(timestampText);
 	const blockDiv = document.createElement('div');
 	blockDiv.classList.add('timeline-item');
@@ -115,54 +125,33 @@ class Block{
 	blockDiv.appendChild(blockMarker);
 	const blockContent = document.createElement('div');
 	blockContent.classList.add('timeline-content');
-	const blockHeader = document.createElement('p');
-	blockHeader.classList.add('heading');
-	blockHeader.innerHTML = `Block #${block.hash}`;
-	const blockData = document.createElement('p');
+	const blockCard = document.createElement('div');
+	blockCard.classList.add('card');
+	const cardContent = document.createElement('div');
+	cardContent.classList.add('card-content');
+	const cardContentInner = document.createElement('div');
+	cardContentInner.classList.add('content');
+	const blockTime = document.createElement('time');
+	blockTime.setAttribute('datetime', convertTimestamp(block.timestamp));
+	blockTime.innerHTML = convertTimestamp(block.timestamp);
+	cardContentInner.appendChild(blockTime);
 	if (!block.transactions[0].from || !block.transactions[0].to || !block.transactions[0].amount)
 	{
-	  blockData.innerHTML = `Block <b>#${block.hash}</b> has no transactions`;
+	  cardContentInner.innerHTML += `<br>Block <b>#${block.hash}</b> has no transactions`;
 	}
 	else
 	{
-	  blockData.innerHTML = `<b>#${block.transactions[0].from}</b> sent <b>${block.transactions[0].amount}</b> to <b>#${block.transactions[0].to}</b>`;
+	  cardContentInner.innerHTML += `<br><b>#${block.transactions[0].from}</b> sent <b>${block.transactions[0].amount}</b> to <b>#${block.transactions[0].to}</b>`;
 	}
-	blockContent.appendChild(blockHeader);
-	blockContent.appendChild(blockData);
+	cardContent.appendChild(cardContentInner);
+	blockCard.appendChild(cardContent);
+	blockContent.appendChild(blockCard);
 	blockDiv.appendChild(blockContent);
 	document.getElementById('chain').appendChild(timestamp);
 	document.getElementById('chain').appendChild(blockDiv);
 	createEnd();
   }
 
-  //function that creates a div that floats above a block and displays the data of the block
-  /*function showData(block){
-	let dataCard = document.createElement('div');
-	dataCard.classList.add('card');
-	const cardcontent = document.createElement('div');
-	cardcontent.classList.add('card-content');
-	const content = document.createElement('div');
-	content.classList.add('content');
-	//Contenido del Block
-	const title = document.createElement('h5');
-	title.innerHTML = `Block #${block.index}`;
-	const timestamp = document.createElement('p');
-	timestamp.innerHTML = `Timestamp: ${block.timestamp}`;
-	var data = document.createElement('p');
-	data.innerHTML = `Data: ${block.data}`;
-	const hash = document.createElement('p');
-	hash.innerHTML = `Hash: ${block.hash}`;
-	content.appendChild(title);
-	content.appendChild(timestamp);
-	content.appendChild(data);
-	content.appendChild(hash);
-
-	cardcontent.appendChild(content);
-	dataCard.appendChild(cardcontent);
-	block.appendChild(data);
-  }*/
-
-//Blockchain
 class Blockchain{
 	constructor(){
 	  this.chain = [this.createGenesisBlock()];
@@ -192,10 +181,10 @@ class Blockchain{
 
 	createTransaction(transaction){
 		if(!transaction.from || !transaction.to){
-			throw new Error('La transacción no tiene una dirección de origen o destino');
+			throw new Error('Transaction must include from and to address');
 		}
 		if(!transaction.isValid()){
-			throw new Error('La transacción no es válida');
+			throw new Error('Transaction must be valid');
 		}
 	  this.waitingTransactions.push(transaction);
 	}
