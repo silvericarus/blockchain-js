@@ -1,3 +1,4 @@
+const bc = new Blockchain();
 function materialColor(){
 	var colors = {
 	  "red": {
@@ -366,7 +367,6 @@ generateKeyPair().then(async function (key) {
   const hashPv = await extractHash(keyPairPriv, "private");
   window.hashPublico = hashPb;
   window.hashPrivado = hashPv;
-  const bc = new Blockchain();
   let tr = new Transaction(window.hashPublico, bc.chain[0].hash, 42);
   bc.createTransaction(tr);
   bc.mineAwaitingTransactions(window.hashPublico);
@@ -386,19 +386,11 @@ document.addEventListener('DOMContentLoaded', function () {
 	const modalTrigger = document.getElementById("modalTrig");
 	function openModal(){
 		modal.classList.add("is-active");
+		generateForm(bc);
 	}
 	modalTrigger.addEventListener("click", openModal);
 	const modalClose = document.getElementsByClassName("modal-close");
 	modalClose[0].addEventListener("click", closeModal);
 	const modalBackground = document.getElementsByClassName("modal-background");
 	modalBackground[0].addEventListener("click", closeModal);
-	const modalSave = document.getElementsByClassName("modal-save");
-	modalSave[0].addEventListener("click", function(){
-		const from = document.getElementById("from").value;
-		const to = document.getElementById("to").value;
-		const amount = document.getElementById("amount").value;
-		const tr = new Transaction(from, to, amount);
-		bc.createTransaction(tr);
-		closeModal();
-	});
 });

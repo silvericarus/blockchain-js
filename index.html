@@ -20,6 +20,17 @@
         font-family: 'Victor Mono', monospace;
         font-style: italic;
     }
+
+    .modalTrig {
+        font-family: 'Victor Mono', monospace;
+        font-style: italic;
+    }
+
+    h1,h2,h3,h4,h5,h6 {
+        font-family: 'Victor Mono', monospace;
+        font-style: oblique;
+        font-weight: bolder;
+    }
 </style>
 </head>
 <body>
@@ -33,7 +44,7 @@
                         <span class="tag is-medium is-primary">Start of the chain</span>
                     </header>
                 </div>
-                <button class="modalTrig" id="modalTrig" data-target="modal-js-example">
+                <button class="button is-primary modalTrig" id="modalTrig" data-target="modal-js-example">
                     Create a new transaction
                 </button>
                 <div class="modal" id="transactionModal">
@@ -51,5 +62,6 @@
     <script src="./js/keygen.js"></script>
     <script src="./js/classes.js"></script>
     <script src="./js/main.js"></script>
+    <script src="./js/generation.js"></script>
 </body>
 </html>
