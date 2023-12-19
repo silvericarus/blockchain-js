@@ -135,13 +135,38 @@ class Block{
 	blockTime.setAttribute('datetime', convertTimestamp(block.timestamp));
 	blockTime.innerHTML = convertTimestamp(block.timestamp);
 	cardContentInner.appendChild(blockTime);
-	if (!block.transactions[0].from || !block.transactions[0].to || !block.transactions[0].amount)
+	if (typeof(block.transactions) === 'string')
 	{
-	  cardContentInner.innerHTML += `<br>Block <b>#${block.hash}</b> has no transactions`;
+		if (!block.transactions[0].to || !block.transactions[0].amount)
+		{
+			cardContentInner.innerHTML += `<br>Block <b>#${block.hash}</b> has no transactions`;
+		}
+		else
+		{
+			cardContentInner.innerHTML += `<br><b>#${block.transactions[0].from}</b> sent <b>${block.transactions[0].amount}</b> to <b>#${block.transactions[0].to}</b>`;
+		}
 	}
-	else
+	else if (typeof(block.transactions) === 'object')
 	{
-	  cardContentInner.innerHTML += `<br><b>#${block.transactions[0].from}</b> sent <b>${block.transactions[0].amount}</b> to <b>#${block.transactions[0].to}</b>`;
+		if (!block.transactions[0].to || !block.transactions[0].amount)
+		{
+			cardContentInner.innerHTML += `<br>Block <b>#${block.hash}</b> has no transactions`;
+		}
+		else
+		{
+			cardContentInner.innerHTML += `<br><b>#${block.transactions[0].from}</b> sent <b>${block.transactions[0].amount}</b> to <b>#${block.transactions[0].to}</b>`;
+		}
+		for (let i = 1; i < block.transactions.length; i++)
+		{
+			if (!block.transactions[i].to || !block.transactions[i].amount)
+			{
+				cardContentInner.innerHTML += `<br>Block <b>#${block.hash}</b> has no transactions`;
+			}
+			else
+			{
+				cardContentInner.innerHTML += `<br><br><b>#${block.transactions[i].from}</b> sent <b>${block.transactions[i].amount}</b> to <b>#${block.transactions[i].to}</b>`;
+			}
+		}
 	}
 	cardContent.appendChild(cardContentInner);
 	blockCard.appendChild(cardContent);
