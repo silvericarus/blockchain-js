@@ -1,3 +1,4 @@
+const bc = new Blockchain();
 function materialColor(){
 	var colors = {
 	  "red": {
@@ -352,7 +353,7 @@ async function extractHash(key, type){
 	return hashHex;
 	}
   } catch(err) {
-	console.error("Error al obtener el hash propio: ", err);
+	console.error("Error getting own hash: ", err);
 	throw err;
   }
 }
@@ -366,10 +367,30 @@ generateKeyPair().then(async function (key) {
   const hashPv = await extractHash(keyPairPriv, "private");
   window.hashPublico = hashPb;
   window.hashPrivado = hashPv;
-  const bc = new Blockchain();
   let tr = new Transaction(window.hashPublico, bc.chain[0].hash, 42);
   bc.createTransaction(tr);
   bc.mineAwaitingTransactions(window.hashPublico);
   createGraphicalBlock(bc.chain[1]);
 });
 
+generateTransactionModal = function(){
+	const modal = document.getElementById("transactionModal");
+	modal.classList.add("is-active");
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+	const modal = document.getElementById("transactionModal");
+	function closeModal(){
+		modal.classList.remove("is-active");
+	}
+	const modalTrigger = document.getElementById("modalTrig");
+	function openModal(){
+		modal.classList.add("is-active");
+		generateForm(bc);
+	}
+	modalTrigger.addEventListener("click", openModal);
+	const modalClose = document.getElementsByClassName("modal-close");
+	modalClose[0].addEventListener("click", closeModal);
+	const modalBackground = document.getElementsByClassName("modal-background");
+	modalBackground[0].addEventListener("click", closeModal);
+});
