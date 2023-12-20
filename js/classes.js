@@ -93,8 +93,8 @@ class Block{
   function convertTimestamp(timestamp){
 	const date = new Date(timestamp);
 	const year = date.getFullYear();
-	const month = date.getMonth()+1;
-	const day = date.getDate();
+	const month = (date.getMonth()+1).toString().padStart(2, "0");
+	const day = date.getDate().toString().padStart(2, "0");
 	const hour = date.getHours();
 	const min = date.getMinutes();
 	const sec = date.getSeconds();
@@ -166,6 +166,12 @@ class Block{
 			{
 				cardContentInner.innerHTML += `<br><br><b>#${block.transactions[i].from}</b> sent <b>${block.transactions[i].amount}</b> to <b>#${block.transactions[i].to}</b>`;
 			}
+			if (i === block.transactions.length - 1)
+			{
+				removeMoneyFromWallet(block.transactions[i].amount);
+				addMoneyToWallet(100);
+			}
+
 		}
 	}
 	cardContent.appendChild(cardContentInner);
