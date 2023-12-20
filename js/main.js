@@ -380,6 +380,8 @@ generateTransactionModal = function(){
 
 document.addEventListener('DOMContentLoaded', function () {
 	const modal = document.getElementById("transactionModal");
+	const walletMoneyCount = document.getElementById("walletMoneyCount");
+
 	function closeModal(){
 		modal.classList.remove("is-active");
 	}
@@ -393,4 +395,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	modalClose[0].addEventListener("click", closeModal);
 	const modalBackground = document.getElementsByClassName("modal-background");
 	modalBackground[0].addEventListener("click", closeModal);
+	amount = 1_000_000;
+	walletMoneyCount.value = amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 });

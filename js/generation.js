@@ -5,8 +5,6 @@ function generateForm(blockchain) {
     if (form.childElementCount === 0) {
         const container = document.createElement('div');
         container.classList.add('container');
-
-        // From Input
         const fromField = document.createElement('div');
         fromField.classList.add('field');
         const fromLabel = document.createElement('label');
@@ -24,8 +22,6 @@ function generateForm(blockchain) {
         fromControl.appendChild(from);
         fromField.appendChild(fromLabel);
         fromField.appendChild(fromControl);
-
-        // To Input
         const toField = document.createElement('div');
         toField.classList.add('field');
         const toLabel = document.createElement('label');
@@ -40,8 +36,6 @@ function generateForm(blockchain) {
         toControl.appendChild(to);
         toField.appendChild(toLabel);
         toField.appendChild(toControl);
-
-        // Amount Input
         const amountField = document.createElement('div');
         amountField.classList.add('field');
         const amountLabel = document.createElement('label');
@@ -58,8 +52,6 @@ function generateForm(blockchain) {
         amountControl.appendChild(amount);
         amountField.appendChild(amountLabel);
         amountField.appendChild(amountControl);
-
-        // Submit Button
         const submitField = document.createElement('div');
         submitField.classList.add('field');
         const submitControl = document.createElement('div');
@@ -71,8 +63,6 @@ function generateForm(blockchain) {
         submit.classList.add('button', 'is-primary');
         submitControl.appendChild(submit);
         submitField.appendChild(submitControl);
-
-        // Event Listener
         submit.addEventListener('click', function (event) {
             event.preventDefault();
             const tr = new Transaction(from.value, to.value, amount.value);
@@ -81,22 +71,32 @@ function generateForm(blockchain) {
             createGraphicalBlock(blockchain.chain[blockchain.chain.length - 1]);
             modal.classList.remove("is-active");
         });
-
-        // Populate options for 'To' dropdown
         blockchain.chain.forEach(function (block) {
             const option = document.createElement('option');
             option.setAttribute('value', block.hash);
             option.innerHTML = block.hash;
             to.appendChild(option);
         });
-
-        // Appending to the container
         container.appendChild(fromField);
         container.appendChild(toField);
         container.appendChild(amountField);
         container.appendChild(submitField);
-
-        // Appending the container to the form
         form.appendChild(container);
     }
+}
+
+function addMoneyToWallet(amount) {
+    const walletMoneyCount = document.getElementById("walletMoneyCount");
+    let tmp = 0;
+    tmp = parseInt(walletMoneyCount.value.replace(/\./g, '')) + amount;
+    walletMoneyCount.value = tmp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
+
+function removeMoneyFromWallet(amount) {
+    const walletMoneyCount = document.getElementById("walletMoneyCount");
+    let tmp = 0;
+    tmp = parseInt(walletMoneyCount.value.replace(/\./g, '')) - amount;
+    console.log(tmp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
+    walletMoneyCount.value = tmp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    console.log(walletMoneyCount.value);
 }
