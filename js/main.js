@@ -359,18 +359,20 @@ async function extractHash(key, type){
 }
 
 generateKeyPair().then(async function (key) {
-  keyPairPub = key.publicKey;
-  keyPairPriv = key.privateKey;
-  window.keyPairPublico = keyPairPub;
-  window.keyPairPrivado = keyPairPriv;
-  const hashPb = await extractHash(keyPairPub, "public");
-  const hashPv = await extractHash(keyPairPriv, "private");
-  window.hashPublico = hashPb;
-  window.hashPrivado = hashPv;
-  let tr = new Transaction(window.hashPublico, bc.chain[0].hash, 42);
-  bc.createTransaction(tr);
-  bc.mineAwaitingTransactions(window.hashPublico);
-  createGraphicalBlock(bc.chain[1]);
+	const ownHash = document.getElementById("ownHash");
+	keyPairPub = key.publicKey;
+	keyPairPriv = key.privateKey;
+	window.keyPairPublico = keyPairPub;
+	window.keyPairPrivado = keyPairPriv;
+	const hashPb = await extractHash(keyPairPub, "public");
+	const hashPv = await extractHash(keyPairPriv, "private");
+	window.hashPublico = hashPb;
+	window.hashPrivado = hashPv;
+	let tr = new Transaction(window.hashPublico, bc.chain[0].hash, 42);
+	bc.createTransaction(tr);
+	bc.mineAwaitingTransactions(window.hashPublico);
+	createGraphicalBlock(bc.chain[1]);
+	ownHash.value = window.hashPublico;
 });
 
 generateTransactionModal = function(){
