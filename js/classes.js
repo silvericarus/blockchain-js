@@ -95,9 +95,9 @@ class Block{
 	const year = date.getFullYear();
 	const month = (date.getMonth()+1).toString().padStart(2, "0");
 	const day = date.getDate().toString().padStart(2, "0");
-	const hour = date.getHours();
-	const min = date.getMinutes();
-	const sec = date.getSeconds();
+	const hour = date.getHours().toString().padStart(2, "0");
+	const min = date.getMinutes().toString().padStart(2, "0");
+	const sec = date.getSeconds().toString().padStart(2, "0");
 	const time = `${day}/${month}/${year} ${hour}:${min}:${sec}`;
 	return time;
   }
@@ -105,6 +105,7 @@ class Block{
   function createGraphicalBlock(block){
 	deleteEnd();
 	const timestamp = document.createElement('div');
+	const to = document.getElementById('to');
 	timestamp.classList.add('timerline-header');
 	const timestampText = document.createElement('span');
 	timestampText.classList.add('tag', 'is-info');
@@ -170,6 +171,9 @@ class Block{
 			{
 				removeMoneyFromWallet(block.transactions[i].amount);
 				addMoneyToWallet(100);
+				const option = document.createElement('option');
+				option.text = block.hash;
+				to.appendChild(option);
 			}
 
 		}

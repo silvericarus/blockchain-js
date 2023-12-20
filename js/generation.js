@@ -64,12 +64,30 @@ function generateForm(blockchain) {
         submitControl.appendChild(submit);
         submitField.appendChild(submitControl);
         submit.addEventListener('click', function (event) {
-            event.preventDefault();
-            const tr = new Transaction(from.value, to.value, amount.value);
-            blockchain.createTransaction(tr);
-            blockchain.mineAwaitingTransactions(from.value);
-            createGraphicalBlock(blockchain.chain[blockchain.chain.length - 1]);
-            modal.classList.remove("is-active");
+            if (typeof(parseInt(amount.value)) !== 'number' || isNaN(parseInt(amount.value))) {
+                alert("The amount must be a number");
+                modal.classList.remove("is-active");
+                return;
+            }
+            else if (amount.value <= 0) {
+                alert("The amount must be greater than 0");
+                modal.classList.remove("is-active");
+                return;
+            }
+            else if (parseInt(amount.value) > parseInt(walletMoneyCount.value.replace(/\./g, ''))) {
+               alert("You don't have enough money");
+                modal.classList.remove("is-active");
+                return;
+            }
+            else
+            {
+                event.preventDefault();
+                const tr = new Transaction(from.value, to.value, amount.value);
+                blockchain.createTransaction(tr);
+                blockchain.mineAwaitingTransactions(from.value);
+                createGraphicalBlock(blockchain.chain[blockchain.chain.length - 1]);
+                modal.classList.remove("is-active");
+            }
         });
         blockchain.chain.forEach(function (block) {
             const option = document.createElement('option');
@@ -96,7 +114,5 @@ function removeMoneyFromWallet(amount) {
     const walletMoneyCount = document.getElementById("walletMoneyCount");
     let tmp = 0;
     tmp = parseInt(walletMoneyCount.value.replace(/\./g, '')) - amount;
-    console.log(tmp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'));
     walletMoneyCount.value = tmp.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    console.log(walletMoneyCount.value);
 }
